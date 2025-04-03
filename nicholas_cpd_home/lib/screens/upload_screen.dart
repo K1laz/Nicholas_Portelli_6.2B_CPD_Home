@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UploadScreen extends StatefulWidget {
   @override
@@ -8,20 +9,44 @@ class UploadScreen extends StatefulWidget {
 }
 
 class _UploadScreenState extends State<UploadScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _animalTypeController = TextEditingController();
   final _breedController = TextEditingController();
   final _localityController = TextEditingController();
 
+  //Camera
   XFile? _imageFile;
 
-  // Open the camera and capture an image
+  // Save the animal data to Firestore
+  Future<void> saveAnimalData(String animalType, String breed, String locality) async {
+    // Add the animal data to Firestore
+   try {
+      await FirebaseFirestore.instance.collection('animals').add({
+        'animalType': _animalTypeController.text,
+        'breed': _breedController.text,
+        'locality': _localityController.text,
+        'createdAt': Timestamp.now(),
+      });
+      print("Data uploaded successfully");
+    } catch (error) {
+      print("Error adding document: $error");
+    }
+  }
+  // Handle the submit button
+  Future<void> handleSubmit() async {
+    await saveAnimalData(
+      _animalTypeController.text,
+      _breedController.text,
+      _localityController.text
+    );
+  }
+
+  // Open the camera to take a photo
   Future<void> _openCamera() async {
     final ImagePicker _picker = ImagePicker();
 
     // Open the camera and pick an image
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-
+    
     if (image != null) {
       setState(() {
         _imageFile = image;
@@ -86,8 +111,13 @@ class _UploadScreenState extends State<UploadScreen> {
 
             // Submit Button
             ElevatedButton(
-              onPressed: () {
-                
+              onPressed: () async { 
+                await saveAnimalData(
+                  _animalTypeController.text,
+                  _breedController.text,
+                  _localityController.text,
+                );
+                Navigator.pop(context);  // Go back to HomeScreen after the data is submitted
               },
               child: Text('Submit'),
             ),

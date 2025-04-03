@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "88105561760",
+    "project_id": "nicholas-cpd-home",
+    "storage_bucket": "nicholas-cpd-home.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88105561760:android:090298918f8dede892a3c5",
+        "android_client_info": {
+          "package_name": "com.example.nicholas_cpd_home"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeTOcDTRbvEbcFE4Dl8fmCp76xr6fi3EU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
