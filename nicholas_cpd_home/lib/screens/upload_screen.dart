@@ -18,8 +18,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
   // Save the animal data to Firestore
   Future<void> saveAnimalData(String animalType, String breed, String locality) async {
-    // Add the animal data to Firestore
-   try {
+    try {
       await FirebaseFirestore.instance.collection('animals').add({
         'animalType': _animalTypeController.text,
         'breed': _breedController.text,
@@ -27,10 +26,36 @@ class _UploadScreenState extends State<UploadScreen> {
         'createdAt': Timestamp.now(),
       });
       print("Data uploaded successfully");
+
+      // Show a success popup (dialog) after submitting
+      showSuccessDialog(context);
     } catch (error) {
       print("Error adding document: $error");
     }
   }
+
+  // Function to show success dialog
+  void showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text('Your animal data has been submitted'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.pop(context); // Go back to the HomeScreen after submission
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Handle the submit button
   Future<void> handleSubmit() async {
     await saveAnimalData(
@@ -46,7 +71,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
     // Open the camera and pick an image
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    
+
     if (image != null) {
       setState(() {
         _imageFile = image;
@@ -111,13 +136,8 @@ class _UploadScreenState extends State<UploadScreen> {
 
             // Submit Button
             ElevatedButton(
-              onPressed: () async { 
-                await saveAnimalData(
-                  _animalTypeController.text,
-                  _breedController.text,
-                  _localityController.text,
-                );
-                Navigator.pop(context);  // Go back to HomeScreen after the data is submitted
+              onPressed: () async {
+                await handleSubmit();  // Submit the form and show dialog
               },
               child: Text('Submit'),
             ),
